@@ -1,0 +1,96 @@
+# ─────────────────────────────────────────────────────────────────
+# Covenant Crest Group Ltd — netlify.toml
+# Last updated: 2025
+# ─────────────────────────────────────────────────────────────────
+
+[build]
+  publish = "."
+
+# Netlify Forms — all 4 auto-detected from HTML hidden inputs:
+#   contact | haulage-quote | trade-enquiry | candidate-apply
+# After deploy: Dashboard > Forms > each form > Notifications > Email > jaby.k@covenantcrest.co.uk
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options           = "SAMEORIGIN"
+    X-Content-Type-Options    = "nosniff"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    Referrer-Policy           = "strict-origin-when-cross-origin"
+    Permissions-Policy        = "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy   = "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; img-src 'self' data: https:; connect-src 'self' https://api.netlify.com https://www.google-analytics.com https://analytics.google.com; form-action 'self';"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# Clean URLs (no .html extension needed)
+[[redirects]]
+  from = "/recruitment"
+  to   = "/recruitment.html"
+  status = 200
+
+[[redirects]]
+  from = "/haulage"
+  to   = "/haulage.html"
+  status = 200
+
+[[redirects]]
+  from = "/trade"
+  to   = "/trade.html"
+  status = 200
+
+[[redirects]]
+  from = "/privacy"
+  to   = "/privacy.html"
+  status = 200
+
+[[redirects]]
+  from = "/login"
+  to   = "/login.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to   = "/admin.html"
+  status = 200
+
+# Branded 404 page
+[[redirects]]
+  from   = "/*"
+  to     = "/404.html"
+  status = 404
+
+# Future: Zoho OAuth Netlify Functions
+# [functions]
+#   directory = "functions"
+# [[redirects]]
+#   from = "/api/*"
+#   to   = "/.netlify/functions/:splat"
+#   status = 200

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Login — Covenant Crest Group Ltd</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0D1B2A;--navy2:#162236;--gold:#C9A84C;--gold2:#E8C96A;
+  --cream:#FAF7F0;--border:#E8E4DC;--muted:#7A8694;--success:#1D9E75;--danger:#E24B4A;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  background:var(--navy);
+  font-family:'Montserrat',sans-serif;
+  font-size:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  padding:24px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* background grid */
+body::before{
+  content:'';
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(201,168,76,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(201,168,76,.025) 1px,transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;
+}
+/* radial glow */
+body::after{
+  content:'';
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:700px;height:700px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,.05) 0%,transparent 60%);
+  pointer-events:none;
+}
+
+.login-card{
+  position:relative;z-index:1;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(201,168,76,.18);
+  border-radius:16px;
+  padding:44px 40px 40px;
+  width:100%;
+  max-width:420px;
+  animation:fU .6s ease both;
+}
+@keyframes fU{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* logo */
+.lc-logo{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:28px;}
+.lc-name{font-family:'Cormorant Garamond',serif;font-size:22px;color:#fff;letter-spacing:.04em;}
+.lc-name span{color:var(--gold);}
+.lc-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#fff;text-align:center;margin-bottom:4px;}
+.lc-sub{font-size:11px;color:rgba(255,255,255,.28);text-align:center;margin-bottom:30px;letter-spacing:.06em;}
+
+/* error/success banners */
+.err-banner{
+  background:rgba(226,75,74,.1);
+  border:1px solid var(--danger);
+  border-radius:6px;
+  padding:11px 14px;
+  color:var(--danger);
+  font-size:12px;
+  font-weight:500;
+  margin-bottom:18px;
+  display:none;
+}
+.err-banner.show{display:block;}
+
+/* form fields */
+.fg{margin-bottom:16px;}
+.fg label{
+  display:block;
+  font-size:9px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.35);
+  margin-bottom:6px;
+}
+.fg input{
+  width:100%;
+  padding:11px 13px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(201,168,76,.18);
+  border-radius:5px;
+  font-family:'Montserrat',sans-serif;
+  font-size:14px;
+  color:#fff;
+  outline:none;
+  transition:border-color .2s,background .2s;
+}
+.fg input:focus{
+  border-color:rgba(201,168,76,.55);
+  background:rgba(255,255,255,.09);
+}
+.fg input::placeholder{color:rgba(255,255,255,.18);}
+
+/* password wrapper with show/hide toggle */
+.pw-wrap{position:relative;}
+.pw-wrap input{padding-right:42px;}
+.pw-toggle{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.3);font-size:17px;line-height:1;
+  transition:color .2s;padding:2px;
+}
+.pw-toggle:hover{color:rgba(255,255,255,.6);}
+
+/* submit button */
+.btn-submit{
+  width:100%;
+  background:var(--gold);
+  color:var(--navy);
+  font-family:'Montserrat',sans-serif;
+  font-size:10px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;
+  padding:14px;
+  border:none;border-radius:3px;
+  cursor:pointer;
+  transition:background .2s,transform .1s;
+  margin-top:6px;
+}
+.btn-submit:hover{background:var(--gold2);}
+.btn-submit:active{transform:scale(.99);}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
+
+/* spinner inside button */
+.btn-spinner{display:none;width:14px;height:14px;border:2px solid rgba(13,27,42,.3);border-top-color:var(--navy);border-radius:50%;animation:spin .6s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* back link */
+.back-link{
+  display:block;text-align:center;margin-top:22px;
+  font-size:11px;color:rgba(255,255,255,.25);
+  text-decoration:none;transition:color .2s;
+}
+.back-link:hover{color:rgba(255,255,255,.5);}
+
+/* first-time setup notice */
+.setup-notice{
+  background:rgba(201,168,76,.07);
+  border:1px solid rgba(201,168,76,.2);
+  border-radius:6px;
+  padding:12px 14px;
+  font-size:11px;
+  color:rgba(255,255,255,.45);
+  line-height:1.7;
+  margin-bottom:20px;
+  display:none;
+}
+.setup-notice.show{display:block;}
+.setup-notice strong{color:var(--gold);}
+</style>
+</head>
+<body>
+
+<div class="login-card" id="loginCard">
+
+  <!-- Logo -->
+  <div class="lc-logo">
+    <svg width="22" height="22" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+      <path d="M40 4L72 18v26c0 16-15 28-32 32C23 72 8 60 8 44V18Z" fill="none" stroke="#C9A84C" stroke-width="1.5"/>
+      <line x1="40" y1="22" x2="40" y2="58" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="22" y1="40" x2="58" y2="40" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
+      <rect x="37" y="37" width="6" height="6" fill="#C9A84C" transform="rotate(45 40 40)"/>
+    </svg>
+    <div class="lc-name">Covenant <span>Crest</span></div>
+  </div>
+
+  <div class="lc-title">Staff Portal</div>
+  <div class="lc-sub">COVENANT CREST GROUP LTD &mdash; AUTHORISED ACCESS ONLY</div>
+
+  <!-- First-time setup notice (shown only if no admin has been configured yet) -->
+  <div class="setup-notice" id="setupNotice">
+    <strong>First-time setup:</strong> No admin account detected. Enter your chosen email and password below to create the Super Admin account. This prompt will not appear again after your first login.
+  </div>
+
+  <!-- Error banner -->
+  <div class="err-banner" id="errBanner">&#x26A0;&#xFE0F; Incorrect email or password. Please try again.</div>
+
+  <!-- Login form — always shown, always requires input -->
+  <form id="loginForm" onsubmit="doLogin(event)" autocomplete="off" novalidate>
+    <div class="fg">
+      <label for="loginEmail">Email Address</label>
+      <input type="email" id="loginEmail" name="email" placeholder="you@covenantcrest.co.uk" required autocomplete="username">
+    </div>
+    <div class="fg">
+      <label for="loginPwd">Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="loginPwd" name="password" placeholder="Enter your password" required autocomplete="current-password" minlength="6">
+        <button type="button" class="pw-toggle" id="pwToggle" aria-label="Toggle password visibility" onclick="togglePw()">&#x1F441;</button>
+      </div>
+    </div>
+    <button type="submit" class="btn-submit" id="submitBtn">
+      <span id="btnLabel">Sign In &rarr;</span>
+      <div class="btn-spinner" id="btnSpinner"></div>
+    </button>
+  </form>
+
+  <a href="/index.html" class="back-link">&larr; Back to main site</a>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   COVENANT CREST — STAFF LOGIN
+   Security model:
+   - Password is ALWAYS required. No auto-login whatsoever.
+   - Super Admin credentials are stored in localStorage only
+     after the user explicitly sets them on first use.
+   - Session token is a random string stored in sessionStorage
+     (cleared automatically when the browser tab is closed).
+   - Employee accounts (created by Super Admin) are stored as
+     an array in localStorage under cc_users.
+   ═══════════════════════════════════════════════════════════ */
+
+var DEFAULT_ADMIN_EMAIL = '';    // intentionally blank — must be set on first login
+var DEFAULT_ADMIN_PWD   = '';    // intentionally blank
+
+/* ── Check if an admin account exists ──────────────────── */
+function adminExists(){
+  var e = localStorage.getItem('cc_adminemail');
+  var p = localStorage.getItem('cc_adminpwd');
+  return !!(e && e.length > 3 && p && p.length >= 6);
+}
+
+/* ── Show first-time setup notice if needed ───────────── */
+window.addEventListener('DOMContentLoaded', function(){
+  if(!adminExists()){
+    document.getElementById('setupNotice').classList.add('show');
+  }
+  // Focus email field immediately — no auto-fill from session
+  document.getElementById('loginEmail').focus();
+});
+
+/* ── Toggle password visibility ────────────────────────── */
+function togglePw(){
+  var inp = document.getElementById('loginPwd');
+  var btn = document.getElementById('pwToggle');
+  if(inp.type === 'password'){
+    inp.type = 'text';
+    btn.textContent = '\uD83D\uDEAB'; // eye-slash equivalent
+    btn.style.opacity = '.6';
+  } else {
+    inp.type = 'password';
+    btn.textContent = '\uD83D\uDC41';
+    btn.style.opacity = '1';
+  }
+}
+
+/* ── Main login handler ─────────────────────────────────── */
+function doLogin(e){
+  e.preventDefault();
+
+  var email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  var pwd   = document.getElementById('loginPwd').value;
+
+  var errEl    = document.getElementById('errBanner');
+  var submitEl = document.getElementById('submitBtn');
+  var labelEl  = document.getElementById('btnLabel');
+  var spinEl   = document.getElementById('btnSpinner');
+
+  // Clear previous error
+  errEl.classList.remove('show');
+
+  // Basic validation
+  if(!email || !pwd){
+    errEl.textContent = '\u26A0\uFE0F Please enter your email and password.';
+    errEl.classList.add('show');
+    return;
+  }
+
+  // Show loading state
+  submitEl.disabled = true;
+  labelEl.style.display = 'none';
+  spinEl.style.display = 'block';
+
+  // Slight artificial delay to prevent timing attacks on the client-side check
+  setTimeout(function(){
+    var authed = false;
+    var role   = '';
+
+    /* ── CASE 1: First-time setup — no admin exists yet ── */
+    if(!adminExists()){
+      if(pwd.length < 8){
+        showError('\u26A0\uFE0F Password must be at least 8 characters for the Super Admin account.');
+        resetButton();
+        return;
+      }
+      // Create the Super Admin account
+      localStorage.setItem('cc_adminemail', email);
+      localStorage.setItem('cc_adminpwd',   pwd);
+      // Remove first-time notice
+      document.getElementById('setupNotice').classList.remove('show');
+      authed = true;
+      role   = 'superadmin';
+
+    /* ── CASE 2: Check Super Admin credentials ─────────── */
+    } else {
+      var storedEmail = (localStorage.getItem('cc_adminemail') || '').toLowerCase();
+      var storedPwd   =  localStorage.getItem('cc_adminpwd')   || '';
+
+      if(email === storedEmail && pwd === storedPwd){
+        authed = true;
+        role   = 'superadmin';
+      }
+
+      /* ── CASE 3: Check Employee accounts ────────────── */
+      if(!authed){
+        try{
+          var users = JSON.parse(localStorage.getItem('cc_users') || '[]');
+          for(var i=0; i<users.length; i++){
+            if((users[i].email||'').toLowerCase() === email && users[i].pwd === pwd){
+              authed = true;
+              role   = 'employee';
+              break;
+            }
+          }
+        } catch(ex){ /* ignore parse errors */ }
+      }
+    }
+
+    /* ── Grant access or show error ───────────────────── */
+    if(authed){
+      // Issue a session token (cleared on tab close via sessionStorage)
+      var token = Math.random().toString(36).slice(2) + Date.now().toString(36);
+      sessionStorage.setItem('cc_session', token);
+      sessionStorage.setItem('cc_role',    role);
+      sessionStorage.setItem('cc_email',   email);
+      // Redirect to admin dashboard
+      window.location.href = '/admin.html';
+    } else {
+      showError('\u26A0\uFE0F Incorrect email or password. Please try again.');
+      resetButton();
+    }
+
+  }, 280);
+}
+
+function showError(msg){
+  var el = document.getElementById('errBanner');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function resetButton(){
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('btnLabel').style.display = 'block';
+  document.getElementById('btnSpinner').style.display = 'none';
+  document.getElementById('loginPwd').value = '';
+  document.getElementById('loginPwd').focus();
+}
+</script>
+</body>
+</html>
